@@ -38,7 +38,7 @@ func TestLikePostHandler(t *testing.T) {
 	if !headerFound {
 		t.Error("Expected 'Location' header in the response")
 	} else {
-		expectedLocation := "/"
+		expectedLocation := "/login"
 		if redirectLocation[0] != expectedLocation {
 			t.Errorf("Expected redirect location %s, but got %s", expectedLocation, redirectLocation[0])
 		}

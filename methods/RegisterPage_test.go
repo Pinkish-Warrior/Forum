@@ -11,7 +11,11 @@ import (
 
 func TestRegisterPage(t *testing.T) {
 	// Parse the "register.html" template
+
+	//IMPORTANT use the following 1st line to run tests and the 2nd when runnnig the server
+
 	tmpl, err := template.ParseFiles("../templates/register.html")
+	// tmpl, err := template.ParseFiles("templates/register.html")
 	if err != nil {
 		t.Fatalf("Error parsing template: %v", err)
 	}

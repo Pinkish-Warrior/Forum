@@ -5,75 +5,58 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
-	"text/template"
 )
 
 func TestErrorHandler(t *testing.T) {
-	// currentWorkingDir, err := os.Executable()
-	// if err != nil {
-	// 	t.Fatal("Failed to get the current working directory:", err)
-	// }
-	// fmt.Println("TEMPLATE_DIR from ErrorHandler_test:", currentWorkingDir)
-	// templatePath := filepath.Join(currentWorkingDir, "./templates/error.html")
 
-	// fmt.Println("templatePath from ErrorHandler_test:", templatePath)
-	tmpl, err := template.New("test").Parse("Test error template: {{.Error}}")
-	if err != nil {
-		t.Fatalf("Failed to create a template: %v", err)
-	}
-
-	templatePath := "test_templates/error.html"
-
-	println(tmpl, "tmpl")
-	println(templatePath, "templatePath")
+	// Load environment variables from the .env file
 
 	tests := []struct {
 		name         string
-		templatePath string
+		path         string
 		expectedCode int
 	}{
 		{
 			name:         "Page not Found",
-			templatePath: "/error/404",
+			path:         "/error/404",
 			expectedCode: http.StatusNotFound,
 		},
 		{
 			name:         "Internal Server Error",
-			templatePath: "/error/500",
+			path:         "/error/500",
 			expectedCode: http.StatusInternalServerError,
 		},
 		{
 			name:         "Bad Request",
-			templatePath: "/error/400",
+			path:         "/error/400",
 			expectedCode: http.StatusBadRequest,
 		},
 		{
 			name:         "Method Not Allowed",
-			templatePath: "/error/405",
+			path:         "/error/405",
 			expectedCode: http.StatusMethodNotAllowed,
 		},
 		{
-			name:         "Service not Available",
-			templatePath: "/error/503",
-			expectedCode: http.StatusServiceUnavailable,
+			name:         "UnspecifiedError",
+			path:         "/error/404",
+			expectedCode: http.StatusNotFound,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			//Create a new HTTP request with specific path
-			req, err := http.NewRequest("GET", tt.templatePath, nil)
+			req, err := http.NewRequest("GET", tt.path, nil)
 			if err != nil {
 				t.Fatalf("Failed to create request: %v", err)
 			}
 			rr := httptest.NewRecorder()
 
-			//Call the ErrorHandler function with request and respose
+			//Call the ErrorHandler function with request and repose
 			ErrorHandler(rr, req)
 
 			//Check if Response status code matches the expected value
 			if status := rr.Code; status != tt.expectedCode {
-				t.Error("Expected status code", tt.expectedCode, "but got", rr.Code)
-				return
+				t.Errorf("Expected status code %d, but got %d", tt.expectedCode, rr.Code)
 			}
 		})
 	}

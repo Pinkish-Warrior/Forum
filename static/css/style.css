@@ -541,7 +541,7 @@ template {
   content: "";
   border-width: 19px;
   border-style: solid;
-  border-color: transparent transparent #f6f6f6 transparent;
+  border-color: transparent;
   position: absolute;
   right: 1px;
   top: -29px;
@@ -569,8 +569,8 @@ template {
 
 .filter {
   background-image: linear-gradient(
-      rgba(70, 113, 70, 0.6),
-      rgba(70, 113, 70, 0.6)
+      rgba(16, 202, 183, 0.5),
+      rgba(16, 202, 183, 0.5)
     ),
     url(/static/3.jpg);
   background-size: cover;

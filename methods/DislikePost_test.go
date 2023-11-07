@@ -3,58 +3,37 @@ package forum
 import (
 	"testing"
 
-	"github.com/DATA-DOG/go-sqlmock"
+	sqlmock "github.com/DATA-DOG/go-sqlmock"
 )
 
 func TestDislikePost(t *testing.T) {
-	// Create a new mock database connection
+	// Create a mock database connection
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
-		t.Fatalf("Failed to create mock database connection: %v", err)
+		t.Fatalf("Error creating mock database: %s", err)
 	}
 	defer mockDB.Close()
 
-	// Replace the global 'db' variable with the mockDB
+	// Replace the global database connection with the mockDB
 	db = mockDB
 
-	// Test cases
-	tests := []struct {
-		name              string
-		userID, commentID int
-		currentLikeStatus bool
-		expectedSQL       string
-		expectedArgs      []interface{}
-		expectedError     error
-	}{
-		{
-			name:              "UserDislikesPost",
-			userID:            1,
-			commentID:         1,
-			currentLikeStatus: false,
-			expectedSQL:       "SELECT like_status FROM comments_likes_dislikes WHERE user_id = ? AND comment_id = ?",
-			expectedArgs:      []interface{}{1, 1},
-			expectedError:     nil,
-		},
-		{
-			name:              "UserUndislikesPost",
-			userID:            2,
-			commentID:         2,
-			currentLikeStatus: true,
-			expectedSQL:       "SELECT like_status FROM comments_likes_dislikes WHERE user_id = ? AND comment_id = ?",
-			expectedArgs:      []interface{}{2, 2},
-			expectedError:     nil,
-		},
-		// Add more test cases for different scenarios here
+	// Define the expected queries and their results
+	mock.ExpectQuery(`SELECT like_status FROM likes_dislikes`).
+		WithArgs(1, 1).
+		WillReturnRows(sqlmock.NewRows([]string{"like_status"}).AddRow(false))
+
+	mock.ExpectExec(`DELETE FROM likes_dislikes`).
+		WithArgs(1, 1).
+		WillReturnResult(sqlmock.NewResult(0, 1))
+
+	// Call the function
+	err = DislikePost(1, 1)
+	if err != nil {
+		t.Errorf("DislikePost() error = %v, expected nil", err)
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			// Expect the SELECT query with arguments
-
-			// Ensure that all expected SQL queries were executed
-			if err := mock.ExpectationsWereMet(); err != nil {
-				t.Errorf("there were unfulfilled expectations: %s", err)
-			}
-		})
+	// Make sure all expectations were met
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
 	}
 }

@@ -4,7 +4,7 @@ FROM golang:latest
 WORKDIR /app
 COPY . .
 RUN go build -o main .
-EXPOSE 8005
+EXPOSE 8000
 CMD [ "/app/main" ]
 
 # docker image build -t forum .

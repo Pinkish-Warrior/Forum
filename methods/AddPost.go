@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"regexp"
+	"strings"
 )
 
 func AddPost(w http.ResponseWriter, r *http.Request) {
@@ -15,10 +17,17 @@ func AddPost(w http.ResponseWriter, r *http.Request) {
 	category := r.FormValue("category")
 	title := r.FormValue("title")
 	content := r.FormValue("content")
+	content = strings.TrimSpace(content)
 
 	// Check if any of the fields are empty, if so, return a 400 error
-	if category == "" || title == "" || content == "" {
+	if category == " " || title == " " || content == " " {
 		http.Error(w, "Invalid input", http.StatusBadRequest)
+		return
+	}
+
+	// Use a regular expression to check for non-empty content
+	if ok, err := regexp.MatchString(`\S`, content); !ok || err != nil {
+		http.Error(w, "🤔 CANNOT see your POST, make sure you write something cool!", http.StatusBadRequest)
 		return
 	}
 

@@ -22,6 +22,10 @@ func main() {
 	}
 	defer db.Close()
 
+	// DEBUGGING - NO GO path
+	// path := os.Getenv("GOPATH")
+	// fmt.Println(path)
+
 	// DEBUGGING
 	currentWorkingDir, err := os.Getwd()
 	if err != nil {
@@ -47,13 +51,13 @@ func main() {
 	http.HandleFunc("/like-dislike", forum.LikeDislikeHandler)
 	http.HandleFunc("/like-comment", forum.LikeCommentHandler)
 	http.HandleFunc("/dislike-comment", forum.DislikeCommentHandler)
-	http.HandleFunc("/error", forum.ErrorHandler)
+	http.HandleFunc("/error/", forum.ErrorHandler)
 	fmt.Println("Server started 🏁")
-	fmt.Println("Listening at 👉 http://localhost:8005")
+	fmt.Println("Listening at 👉 http://localhost:8000")
 	fmt.Println("Ctrl+c to Close the Server ❌")
 
 	// Consider using log.Fatal instead of log.Panic to handle server errors gracefully.
-	if err := http.ListenAndServe(":8005", nil); err != nil {
+	if err := http.ListenAndServe(":8000", nil); err != nil {
 		log.Fatal(err)
 	}
 }
