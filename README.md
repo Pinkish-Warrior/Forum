@@ -1,5 +1,5 @@
 ## FORUM 👥🌐💬
-
+[![Run Project](https://img.shields.io/badge/Run-Project-blue)](https://forum-image-upload.onrender.com)
 ## Imports:
 
 The code begins with importing necessary packages, including standard libraries like database/sql, encoding/json, log, net/http, sync, and external packages like github.com/mattn/go-sqlite3 for SQLite database handling.
